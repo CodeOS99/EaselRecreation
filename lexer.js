@@ -64,6 +64,30 @@ export class Lexer {
 
     scanToken() {
         const char = this.advance();
+
+        switch(char) {
+            case '(': this.addToken(Token.LeftParen); break;
+            case ')': this.addToken(Token.RightParen); break;
+            case '{': this.addToken(Token.LeftBrace); break;
+            case '}': this.addToken(Token.RightBrace); break;
+            case '[': this.addToken(Token.LeftBracket); break;
+            case ']': this.addToken(Token.RightBracket); break;
+            case '.': this.addToken(Token.Period); break;
+            case ',': this.addToken(Token.Comma); break;
+            case ':': this.addToken(Token.Colon); break;
+            case '|': this.addToken(Token.Or); break;
+            case '&': this.addToken(Token.And); break;
+            case '\'':
+                case '\"': 
+                let string = [];
+                while(this.peek() !== char) {
+                    string.push(this.advance());
+                    if(this.peek === '\0') this.error("Unterminated string");
+                }
+                this.advance(); // skip closing quote
+                string = string.join('');
+                return this.tokens.push(new Token(Token.String, string, string, this.line, this.column));
+        }
     }
 
     peek() {
